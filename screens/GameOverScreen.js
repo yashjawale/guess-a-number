@@ -11,7 +11,12 @@ const GameOverScreen = (props) => {
 			<View style={styles.imageContainer}>
 				<Image
 					style={styles.image}
-					source={require("../assets/success.png")}
+					fadeDuration={300}
+					// source={require('../assets/success.png')}
+					source={{
+						uri:
+							"https://cdn.pixabay.com/photo/2016/05/05/23/52/mountain-summit-1375015_960_720.jpg",
+					}}
 					resizeMode="cover"
 				/>
 			</View>
