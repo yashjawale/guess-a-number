@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	Alert,
 	ScrollView,
+	FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -26,11 +27,11 @@ const generateRandomInBetween = (min, max, exclude) => {
 	}
 };
 
-const renderListItem = (value, numOfRound) => {
+const renderListItem = (listLength, itemData) => {
 	return (
-		<View style={styles.listItem} key={value}>
-			<BodyText>#{numOfRound}</BodyText>
-			<BodyText>{value}</BodyText>
+		<View style={styles.listItem}>
+			<BodyText>#{listLength - itemData.index}</BodyText>
+			<BodyText>{itemData.item}</BodyText>
 		</View>
 	);
 };
@@ -38,7 +39,7 @@ const renderListItem = (value, numOfRound) => {
 const GameScreen = (props) => {
 	const initialGuess = generateRandomInBetween(1, 100, props.userChoice);
 	const [currentGuess, setCurrentGuess] = useState(initialGuess);
-	const [pastGuesses, setPastGuesses] = useState([initialGuess]);
+	const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
 	const currentLow = useRef(1);
 	const currentHigh = useRef(100);
 
@@ -74,7 +75,10 @@ const GameScreen = (props) => {
 		);
 		setCurrentGuess(nextNumber);
 		// setRounds((currRounds) => currRounds + 1);
-		setPastGuesses((curPastGuesses) => [nextNumber, ...curPastGuesses]);
+		setPastGuesses((curPastGuesses) => [
+			nextNumber.toString(),
+			...curPastGuesses,
+		]);
 	};
 
 	return (
@@ -91,11 +95,17 @@ const GameScreen = (props) => {
 			</Card>
 
 			<View style={styles.listContainer}>
-				<ScrollView contentContainerStyle={styles.list}>
+				{/* <ScrollView contentContainerStyle={styles.list}>
 					{pastGuesses.map((guess, index) =>
 						renderListItem(guess, pastGuesses.length - index)
 					)}
-				</ScrollView>
+				</ScrollView> */}
+				<FlatList
+					keyExtractor={(item) => item}
+					data={pastGuesses}
+					renderItem={renderListItem.bind(this, pastGuesses.length)}
+					contentContainerStyle={styles.list}
+				/>
 			</View>
 		</View>
 	);
@@ -115,13 +125,13 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	listContainer: {
-		width: "80%",
+		width: "60%",
 		flex: 1,
 	},
 	list: {
 		flexGrow: 1,
 		//flex: 1 doesn't work here
-		alignItems: "center",
+		// alignItems: "center",
 		justifyContent: "flex-end",
 	},
 	listItem: {
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		marginVertical: 10,
 		justifyContent: "space-around",
-		width: "60%",
+		width: "100%",
 	},
 });
 
